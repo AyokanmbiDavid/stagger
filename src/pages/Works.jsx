@@ -1,6 +1,6 @@
-import React,{useState} from 'react'
+import React,{Suspense, useState} from 'react'
 import { motion } from 'framer-motion'
-import { MyWorks } from '../components/Exporting'
+import { LoadingBig, MyWorks } from '../components/Exporting'
 import { ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/outline'
 
 const Works = () => {
@@ -8,7 +8,8 @@ const Works = () => {
 
   return (
     <>
-     <motion.div
+     <Suspense fallback={<LoadingBig/>}>
+      <motion.div
       initial={{scale:1.2}}
       animate={{scale:1}}
       transition={{duration:0.4, ease:"easeIn"}}
@@ -51,6 +52,7 @@ const Works = () => {
         ))}
       </div>
       </motion.div>
+     </Suspense>
     </>
   )
 }

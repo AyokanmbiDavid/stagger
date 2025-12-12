@@ -1,6 +1,8 @@
 import React from 'react'
 import ProfilePic from '../images/Img1.jpg'
 import {motion}  from 'framer-motion'
+import { ReactTyped } from 'react-typed'
+
 
 const WelcomePage = () => {
   return (
@@ -13,9 +15,20 @@ const WelcomePage = () => {
           <div className="border border-slate-800 w-[150px] h-[150px] rounded-full ">
             <img src={ProfilePic} className="object-cover w-full rounded-full h-full" />
           </div>
-        <h1 className="text-xl font-bold text-slate-300">
-          Hi there, My name is David
-        </h1>
+        <motion.h1
+        animate={{
+          y:[-7,0,-7],
+        }}
+        transition={{bounceDamping: 20, duration: 2, repeat: Infinity}}
+        className="text-xl font-bold text-slate-300 text-center">
+          Hi there,{' '}
+          <ReactTyped
+            strings={['My name is David','I am a Software Developer','I am a FullStack Developer','I love Coding']}
+            typeSpeed={60}
+            backSpeed={60}
+            loop={true}
+          />
+        </motion.h1>
       </motion.div>
     </>
   )

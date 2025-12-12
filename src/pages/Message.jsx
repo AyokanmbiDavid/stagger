@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 import { motion } from 'framer-motion'
 import e from 'cors'
+import { LoadingBig } from '../components/Exporting'
 
 const Message = () => {
   const [WhatsappForm, setWhatsappForm] = useState({
@@ -30,12 +31,25 @@ const Message = () => {
 
   return (
     <>
-    <motion.div 
+  <Suspense fallback={<LoadingBig/>}>
+      <motion.div 
       initial={{y:-60}}
       animate={{y:0}}
       transition={{duration:0.7, ease:"easeIn"}}
     className="flex justify-center md:items-center w-full h-[400px]" onSubmit={submitForm}>
-      <form className="p-2">
+      <motion.form 
+      drag
+      dragConstraints={{
+        top:0,
+        left:0,
+        right: 0,
+        bottom:0,
+      }}
+      transition={{ duration: 1,bounceStiffness: 600}}
+      className="p-2 md:border md:border-slate-800 rounded-lg md:shadow-lg ">
+        <div className="flex items-center justify-center p-2 max-md:hidden md:cursor-grab">
+          <div className="w-30 p-1 rounded-full bg-slate-700"></div>
+        </div>
       <h1 className="text-sm text-slate-300">
         What would you love to tell me?
       </h1>
@@ -67,12 +81,13 @@ const Message = () => {
         <div className="w-full flex justify-center items-center my-2 mt-3">
           <button className="p-2 w-7/10 max-md:w-full rounded-md bg-green-700 cursor-pointer hover:shadow-md hover:bg-green-800
           duration-300">
-            Send
+            Send (Whatsapp)
           </button>
         </div>
 
-      </form>
+      </motion.form>
     </motion.div>
+  </Suspense>
     </>
   )
 }

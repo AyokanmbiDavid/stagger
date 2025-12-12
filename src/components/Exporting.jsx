@@ -1,9 +1,10 @@
-import { ArrowUpIcon, BookmarkIcon, BookOpenIcon, ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, MicrophoneIcon, PhoneIcon, VideoCameraIcon } from "@heroicons/react/24/outline";
+import { ArrowUpIcon, BookmarkIcon, BookOpenIcon, ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, MicrophoneIcon, PhoneIcon, VideoCameraIcon, WrenchIcon } from "@heroicons/react/24/outline";
 
 
 export const Menus = [
     {name: 'Home', icon: <HomeIcon className='w-4 h-4'/>, link: '/',},
     {name: 'Message Me', icon: <ChatBubbleBottomCenterIcon className='h-4 w-4'/>, link: '/message'},
+    {name:'Skills', icon: <WrenchIcon className="h-4 w-4" />, link:"/skills"},
     {name: 'My Works', icon: <BookOpenIcon className='w-4 h-4'/>, link: '/work',},
   ];
 
@@ -20,11 +21,32 @@ export const Menus = [
     {name:'TaskDown', link:'', desc:'it helps you keep track of your task with time, sendings mails and notifications.'},
    ]
 
+  // frontend skills
+
+   export const frontendSkills = [
+    {name: 'HTML', desc: 'What the user see and touch'},
+    {name: 'CSS', desc: 'the structure and look of the website'},
+    {name: 'JavaScript', desc: 'the main bone of the website'},
+    {name: 'Boostrap', desc: 'A css libary'},
+    {name: 'Tailwind', desc: 'A css library (better)'},
+    {name: 'Api', desc: 'get,put,push,delete data from backend'},
+    {name: 'ReactJs', desc: 'A javaScript framework'}
+   ]
+
+  //  backend Skills
+  export const backendSkills = [
+    {name: 'NodeJs', desc: 'javaScript for backend'},
+    {name: 'ExpressJs', desc: 'Express for routing'},
+    {name: 'JsonwebToken', desc: 'secure token generation'},
+    {name: 'GoogleAuth', desc: 'For google login and signup'},
+    {name: 'Mern-stack', desc: 'Databse MongoDb'},
+  ]
+
 // loading small
 export function LoadingSmall () {
   return(
      <div className="border border-green-700 text-green-700 p-2 px-4 rounded-full max-md:text-xs">
-          Loading...
+          Loading... Importing docs.
         </div>
   )
 }
