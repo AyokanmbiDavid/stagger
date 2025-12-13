@@ -1,25 +1,13 @@
-import { ArrowUpIcon, BookmarkIcon, BookOpenIcon, ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, MicrophoneIcon, PhoneIcon, VideoCameraIcon, WrenchIcon } from "@heroicons/react/24/outline";
+import {  ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, UserIcon, WrenchIcon } from "@heroicons/react/24/outline";
 
+export const userData = JSON.parse(localStorage.getItem('sonaData')) || [];
 
 export const Menus = [
-    {name: 'Home', icon: <HomeIcon className='w-4 h-4'/>, link: '/',},
-    {name: 'Message Me', icon: <ChatBubbleBottomCenterIcon className='h-4 w-4'/>, link: '/message'},
-    {name:'Skills', icon: <WrenchIcon className="h-4 w-4" />, link:"/skills"},
-    {name: 'My Works', icon: <BookOpenIcon className='w-4 h-4'/>, link: '/work',},
+    {name: 'Dashboard', icon: <HomeIcon className='w-6 h-6'/>, link: '/home',},
+    {name: 'Message Us', icon: <ChatBubbleBottomCenterIcon className='h-6 w-6'/>, link: '/message'},
+    {name:'Skills', icon: <WrenchIcon className="h-6 w-6" />, link:"/skills"},
+    {name: 'Team', icon: <UserIcon className='w-6 h-6'/>, link: '/team',},
   ];
-
-  // contacts
-  export const Contacts = [
-    {name:'Telephone', val:'09024572602'},
-    {name:'Gmail', val:'davidayokanmbi47@gmail.com'},
-    {name:'LinkedIn', val:'https://linkedin.com'}
-  ]
-
-// works
-   export const MyWorks = [
-    {name:'SociaLing', link:'', desc:'it is a social networking application'},
-    {name:'TaskDown', link:'', desc:'it helps you keep track of your task with time, sendings mails and notifications.'},
-   ]
 
   // frontend skills
 

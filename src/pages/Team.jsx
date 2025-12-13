@@ -3,17 +3,15 @@ import { LoadingBig } from '../components/Exporting'
 
 const Navbar = React.lazy(() => import('../components/Navbar.jsx'))
 
-
-const Message = () => {
+const Team = () => {
   return (
     <>
-    <Navbar/>
+      <Navbar/>
       <Suspense fallback={<LoadingBig/>}>
         
-        Message
       </Suspense>
     </>
   )
 }
 
-export default Message
+export default Team

@@ -25,6 +25,10 @@ body {
   display: none;
 }
 
+ input:focus {
+  outline: none ;
+}
+
 @custom-variant dark (&:where(.dark, .dark *))
 
 
