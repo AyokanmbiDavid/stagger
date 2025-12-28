@@ -13,39 +13,22 @@ const Navbar = () => {
    <>
    {/* for desktop */}
     <Suspense fallback={<LoadingBig/>}>
-      <motion.nav
-    initial={{y:-20}}
-    animate={{y:0}}
-    transition={{duration:0.6, ease:"easeIn"}}
-    className="w-full max-lg:hidden p-2 z-20 fixed top-0 left-0 bg-slate-900">
-      
-    </motion.nav>
-
-    {/* for mobile */}
-     <motion.nav
-    initial={{y:20}}
-    animate={{y:0}}
-    className="w-full lg:hidden p-2 py-4 z-20 fixed bottom-0 border-3 bg-white border-gray-300">
-      <div className="flex justify-evenly gap-2">
-        {Menus.map((e,i) => (
-          <>
-          <Link to={e.link} className={`${loaction.pathname == e.link ? 'bg-purple-500 text-white' : 'text-gray-800'} p-2 rounded-full flex justify-center items-center gap-2 px-3`}>
-            {e.icon}
-            {loaction.pathname == e.link &&
-            <motion.h1
-            initial={{
-              scale:0,
-            }}
-            animate={{scale:1}}
-            transition={{duration: 0.4}}
-            className={`font-semibold text-sm origin-left`}>
-              {e.name}
-            </motion.h1>}
-          </Link>
-          </>
-        ))}
+      <div className="w-full bottom-5 absolute">
+        <motion.nav
+        className='w-full p-2 border-2 border-slate-300 rounded-2xl lg:hidden shadow-lg'>
+          <div className="flex gap-2 w-full justify-evenly">
+            {Menus.map((e,i) => (
+              <>
+                <Link
+                to={e.link}
+                className={`p-2 px-4 rounded-xl ${loaction.pathname == e.link ? 'bg-green-100 text-green-700 border-green-300 border-2' : 'text-slate-700'}`}>
+                  {e.icon}
+                </Link>
+              </>
+            ))}
+          </div>
+        </motion.nav>
       </div>
-    </motion.nav>
     </Suspense>
    </>
   )

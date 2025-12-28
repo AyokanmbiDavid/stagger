@@ -1,202 +1,199 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import {motion} from 'framer-motion'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
-import { LoadingBig } from '../components/Exporting'
+import { apiUrl, LoadingBig } from '../components/Exporting'
 import { useNavigate } from 'react-router-dom'
+import { ReactTyped } from 'react-typed'
+import axios from 'axios'
+import { Link } from 'react-router-dom'
 
 const LoginReg = () => {
   const navigate = useNavigate();
+  const [allgetUser, setAllgetuser] = useState([]);
   const [welForm, setWelForm] = useState({
     email: '',
-    name: ''
+    username: '',
+    age: '',
+    password: '',
   });
+  const [usernameErr, setUsernameerr] = useState(false);
+  const [ageErr, setAgeerr] = useState(false)
 
-  // get Name from LocalStorage
-  useEffect(() => {
-    const sonaData = JSON.parse(localStorage.getItem('sonaData')) || [];
-    setWelForm(sonaData);
-  }, []);
-
-
-  // change welform
   function changeForm (e,name) {
     setWelForm({...welForm,
-       [name]: e.target.value});
-       console.log(welForm);
-       
+      [name]: e.target.value
+    })
+  };
+
+  useEffect(() => {
+    try{
+        axios.get(`${apiUrl}/users`).then(res =>
+          setAllgetuser(res.data)
+        );
+    } catch (e) {
+      console.error(e)
+    }
+  }, []);
+
+  // check f username available
+  function checkUsername (username) {
+    
+   let checkUsername = allgetUser.find(e => username.target.value.toLowerCase() == e.username.toLowerCase());
+
+   if (!checkUsername) {
+    setUsernameerr(false) 
+   } else {
+    setUsernameerr(true)
+   }
   }
 
-  // submit data
-  async function submitData (e) {
-    e.preventDefault();
+  // check Age compatibilty
+  function checkAge (e) {
+   let check = parseInt(e.target.value) >= 15;
 
-    try{
-        localStorage.setItem('sonaData', JSON.stringify(welForm));
-        navigate('/home')
-    } catch (e) {
-      alert('error')
+    if (check) {
+      setAgeerr(false)
+    } else {
+      setAgeerr(true)
     }
   }
-  
 
+  // submit form funstion
+  function submitForm (e) {
+    e.preventDefault();
 
-  // sign in
-  function Welcome () {
-    return(
-      <>
-      
-      </>
-    )
+    let checkUserExist = allgetUser.find(e => e.mail == welForm.email && e.password == welForm.password)
+
+   if (!usernameErr && !ageErr && !checkUserExist) {
+    try{
+        axios.post(`${apiUrl}/users`, welForm);
+        localStorage.setItem('staggerLog', JSON.stringify({email: welForm.email,
+          username: welForm.username
+        }));
+        navigate('/home')
+    } catch (e) {
+      console.error(e)
+    }
+   }
   }
 
   return (
     <>
        <Suspense fallback={<LoadingBig/>}>
-         <div 
-        
-        className='bg-blue-600 w-full h-screen flex justify-start items-center'>
-          <div className="w-full h-screen relative ">
-        {/* greetings */}
-          <div className="w-full lg:w-1/2 text-center py-10 mt-30 lg:mt-40">
-            <h1 className="text-3xl font-bold text-white">
-              Sona
-            </h1>
-            <div className="mt-3 font-semibold text-lg text-white">
-              Welcome to sona team
-            </div>
-          </div>
-        {/* for desktop */}
+       <div className="py-2 relative h-screen">
+        {/* title */}
+        <h1 className="text-lg text-slate-800 font-semibold">
+          <ReactTyped 
+          strings={['Stagger']}
+          typeSpeed={'10'}
+          backDelay={'20'}
+          backSpeed={'5'}
+          loop
+          />
+        </h1>
+
         <motion.div
-          initial={{
-            x: 300,
-          }}
-          animate={{x:0}}
-          transition={{duration:0.7}}
-        className='max-lg:hidden fixed right-0 bottom-0 bg-white rounded-3xl p-2 mr-[-40px] mb-[-30px] w-3/5 pr-10
-        h-9/10 flex justify-center items-center'>
-           <form
-          onSubmit={submitData}
-          className="flex flex-col justify-center items-center w-8/10">
-            {/* Email */}
-            <div className="p-2 w-10/11 mt-2">
-              <label className="text-xs text-gray-700">
-                Name
-              </label>
-              <motion.input
-              whileFocus={{
-                scale: 1.05,
-                y:-2
-              }}
-               type="text" 
-               className="w-full rounded-lg p-3 text-sm border-3 border-gray-300 focus:shadow-md focus:outline-0" 
-              placeholder='Name..'
-                onChange={(e) => changeForm(e,'name')}
-              />
-            </div>
+        initial={{y:30}}
+        animate={{y:[-100,0,-50,0,-20,0.-10,0]}}
+        transition={{duration: 0.6}}
+         className="md:hidden p-2 absolute w-full bottom-5 border-5 border-slate-300 rounded-4xl min-h-[460px] shadow-lg duration-200">
+          {/* new to stagger */}
+          <h1 className="text-lg text-green-600 font-semibold w-full text-center my-3">
+            Welcome to Stagger
+          </h1>
 
-            {/* password */}
-            <div className="p-2 w-10/11">
-              <label className="text-xs text-gray-700">
-                Email
-              </label>
-              <motion.input
-              whileFocus={{
-                scale: 1.05,
-                y:-2
-              }} 
-              type="email"
-               className="w-full rounded-lg p-3 text-sm border-3 border-gray-300" 
-              placeholder='Email...' 
-              onChange={(e) => changeForm(e,'email')}
-              required/>
-            </div>
-            {/* remember and forget password */}
-            <div className="flex w-10/11 justify-between p-2">
-              {/* remember me checkbox */}
-              <div className="flex items-center gap-2 text-xs">
-                <input type="checkbox" name='rem' /> 
-                <label htmlFor="rem">Remember me</label>
-              </div>
-            </div>
-
-            {/* submit button */}
-            <motion.button type='submit'
-            whileTap={{
-              scale: 0.95
-            }}
-            className="w-10/11 rounded-lg bg-blue-500 border-5 border-t border-l border-r border-blue-600
-             text-sm my-2 text-white py-3 mb-20">
-            Submit
-            </motion.button>
-          </form>
-        </motion.div>
-
-        {/* for mobile */}
-        <motion.div
-        initial={{y:300}}
-        animate={{y:0}}
-        transition={{duration: 0.5, bounceDamping: 600}}
-        className='lg:hidden absolute bottom-0 left-0 w-full p-3 rounded-3xl bg-white
-        border-3 border-gray-300 shadow-2xl'>
-
+          {/* form for registeration */}
           <form
-          onSubmit={submitData}
-          className="flex flex-col justify-center items-center">
+          onSubmit={submitForm}
+           className="w-full">
             {/* Email */}
-            <div className="p-2 w-10/11 mt-2">
-              <label className="text-xs text-gray-700">
-                Name
-              </label>
-              <motion.input
-              whileFocus={{
-                scale: 1.05,
-                y:-2
-              }}
-               type="text" 
-               className="w-full rounded-lg p-3 text-sm border-3 border-gray-300 focus:shadow-md focus:outline-0" 
-              placeholder='Name..'
-                onChange={(e) => changeForm(e,'name')}
-              />
-            </div>
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Email
+                </h1>
 
-            {/* password */}
-            <div className="p-2 w-10/11">
-              <label className="text-xs text-gray-700">
-                Email
-              </label>
-              <motion.input
-              whileFocus={{
-                scale: 1.05,
-                y:-2
-              }} 
-              type="email"
-               className="w-full rounded-lg p-3 text-sm border-3 border-gray-300" 
-              placeholder='Email...' 
-              onChange={(e) => changeForm(e,'email')}
-              required/>
-            </div>
-            {/* remember and forget password */}
-            <div className="flex w-10/11 justify-between p-2">
-              {/* remember me checkbox */}
-              <div className="flex items-center gap-2 text-xs">
-                <input type="checkbox" name='rem' /> 
-                <label htmlFor="rem">Remember me</label>
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="email"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Email...'
+                 onChange={(e) => changeForm(e, 'email')}
+                 required />
               </div>
-            </div>
 
-            {/* submit button */}
-            <motion.button type='submit'
-            whileTap={{
-              scale: 0.95
-            }}
-            className="w-10/11 rounded-lg bg-blue-500 border-5 border-t border-l border-r border-blue-600
-             text-sm my-2 text-white py-3 mb-20">
-            Submit
-            </motion.button>
-          </form>
+             {/* UserName */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  UserName
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="text"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='UserName...' 
+                  onChange={(e) => {changeForm(e, 'username'); checkUsername(e)}}
+                  required/>
+
+                  {welForm.username && 
+                  <div className={`${!usernameErr ? 'text-green-500' : 'text-red-600'}`}>
+                    {welForm.username} {!usernameErr ? 'is available' : 'is already taken'}
+                  </div>}
+              </div>
+
+                 {/* Password */}
+                  <div className="flex flex-col gap-2 p-3">
+                    <h1 className="text-xs font-semibold text-slate-700">
+                      Password
+                    </h1>
+    
+                    <motion.input 
+                    whileFocus={{y:-5, scale: 1.03}}
+                    type="password"
+                      className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                      placeholder='Password'
+                      onChange={(e) => changeForm(e, 'password')}
+                      required />
+                  </div>
+
+               {/* Age */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                 Age
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="number"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Age (15 and above)...'
+                 onChange={(e) => {changeForm(e, 'age'); checkAge(e)}} 
+                 required/>
+
+                 {welForm.age &&
+                 <div className={`${ageErr ? 'text-red-600' : 'text-green-600'}`}>
+                  {ageErr ? 'you are not old enough' : 'ok good to go'}
+                </div>}
+              </div>
+
+              {/* submit button */}
+              <motion.button
+              whileTap={{scale:0.97}}
+              className='w-full border-2 border-b-4 rounded-2xl p-3 bg-green-500 border-green-600 text-white mt-2 shadow-sm'
+              >
+                Submit
+              </motion.button>
+
+             
+           </form> 
+           {/* login button */}
+           <Link to={'/login'}>
+               <button className='w-full border-2 border-b-4 rounded-2xl p-3 mt-3 border-blue-600'>
+               Login
+               </button>
+          </Link>
         </motion.div>
-      </div>
-        </div>
+       </div>
        </Suspense>
     </>
   )
