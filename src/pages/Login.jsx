@@ -33,9 +33,9 @@ const Login = () => {
 
   useEffect(() => {
     try{
-        axios.get(`${apiUrl}/users`).then(res =>
-          setAllgetuser(res.data)
-        );
+        // no longer fetch all users; login via API
+        // keep placeholder in case needed
+        // axios.get(`${apiUrl}/users`).then(res => setAllgetuser(res.data));
     } catch (e) {
       console.error(e)
     }
@@ -45,23 +45,25 @@ const Login = () => {
    // submit form funstion
   function submitForm (e) {
     e.preventDefault();
-      let checkUser = allgetUser.find(e => e.email == welForm.email && e.password == welForm.password);
-
-
-      try{
-        if (checkUser) {
-          localStorage.setItem('staggerLog', JSON.stringify({email: checkUser.email,
-            username: checkUser.username
-          }));
-          showToast('Login successful', 'success')
-          setTimeout(() => navigate('/home'), 200)
-        } else {
-          showToast('Wrong email or password', 'error')
-        }
-      }catch (e) {
-          console.error(e)
-          showToast('Login failed', 'error')
-      }
+      // call backend login
+      axios.post(`${apiUrl}/users/login`, welForm)
+        .then(res => {
+          const { token, user } = res.data || {}
+          if (token) {
+            localStorage.setItem('staggerToken', token)
+            localStorage.setItem('staggerUser', JSON.stringify(user))
+            // keep staggerLog for ProtectedRoute compatibility
+            localStorage.setItem('staggerLog', JSON.stringify({ email: user.email, username: user.username }))
+            showToast('Login successful', 'success')
+            setTimeout(() => navigate('/home'), 200)
+          } else {
+            showToast('Login failed', 'error')
+          }
+        })
+        .catch(err => {
+          console.error(err?.response?.data || err)
+          showToast(err?.response?.data?.error || 'Wrong email or password', 'error')
+        })
   }
   return (
     <>

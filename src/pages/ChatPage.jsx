@@ -1,8 +1,8 @@
 import React, { Suspense, useEffect, useState } from 'react'
-import { apiUrl, LoadingBig, LoadingSmall } from '../components/Exporting.jsx';
+import { apiUrl, LoadingBig, LoadingSmall, authHeaders } from '../components/Exporting.jsx';
 import { ArrowRightIcon, BellIcon, CalendarIcon, ChatBubbleLeftIcon, MagnifyingGlassIcon, PaperAirplaneIcon, PlusIcon, WrenchIcon } from '@heroicons/react/24/outline';
 import {motion} from 'framer-motion'
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import {ReactTyped} from 'react-typed'
 import { CheckIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import axios from 'axios'
@@ -13,6 +13,8 @@ const ChatPage = () => {
     { id: 1, senderName: 'AuraNostra', text: "Hey — this is the receiver's message. How are you?", time: new Date().toISOString(), isMine: false },
     { id: 2, senderName: 'You', text: "I'm good — thanks! This is my message.", time: new Date().toISOString(), isMine: true }
   ])
+  const { chatId } = useParams()
+  const [convoId, setConvoId] = useState(null)
   const messagesRef = React.useRef(null)
   const textareaRef = React.useRef(null)
   const [inputHeight, setInputHeight] = useState(56)
@@ -38,6 +40,48 @@ const ChatPage = () => {
       if (atBottom) el.scrollTop = 0
     })
   }, [messages])
+
+
+  // load conversation on mount
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const me = JSON.parse(localStorage.getItem('staggerUser') || '{}')
+        if (!me || !me._id) return
+
+        // try treat chatId as conversation id
+        let convo = null
+        try {
+          const res = await axios.get(`${apiUrl}/chats/${chatId}`, { headers: authHeaders() })
+          convo = res.data
+        } catch (e) {
+          // not a conversation id — treat chatId as other user's id
+        }
+
+        if (!convo) {
+          // fetch user conversations and find one that includes chatId
+          const res = await axios.get(`${apiUrl}/chats/user/${me._id}`, { headers: authHeaders() })
+          const convos = res.data || []
+          convo = convos.find(c => c.participants.some(p => (p._id || p) === chatId || (String(p._id || p) === String(chatId))))
+        }
+
+        if (!convo) {
+          // create a new conversation between me and chatId
+          const createRes = await axios.post(`${apiUrl}/chats`, { participants: [me._id, chatId] }, { headers: authHeaders() })
+          convo = createRes.data
+        }
+
+        if (convo) {
+          setConvoId(convo._id || convo.id || chatId)
+          const mapped = (convo.messages || []).map(m => ({ id: m._id || Date.now(), senderName: m.senderName, text: m.text, time: m.timestamp || m.time || new Date().toISOString(), isMine: String(m.sender) === String(me._id) }))
+          setMessages(mapped)
+        }
+      } catch (err) {
+        console.error('Failed to load conversation', err)
+      }
+    }
+    load()
+  }, [chatId])
 
   useEffect(() => {
     function onDocClick(e) {
@@ -80,8 +124,22 @@ const ChatPage = () => {
       return
     }
 
-    const next = { id: Date.now(), senderName: username, text: trimmed, time: new Date().toISOString(), isMine: true }
-    setMessages(m => [...m, next])
+    const next = { sender: JSON.parse(localStorage.getItem('staggerUser') || '{}')._id, senderName: username, text: trimmed }
+
+    // post to backend
+    if (convoId) {
+      axios.post(`${apiUrl}/chats/${convoId}/messages`, next, { headers: authHeaders() })
+        .then(res => {
+          const created = res.data
+          const mapped = { id: created._id || Date.now(), senderName: created.senderName, text: created.text, time: created.timestamp || new Date().toISOString(), isMine: true }
+          setMessages(m => [...m, mapped])
+        }).catch(err => {
+          console.error('send message failed', err)
+        })
+    } else {
+      // fallback local
+      setMessages(m => [...m, { id: Date.now(), senderName: username, text: trimmed, time: new Date().toISOString(), isMine: true }])
+    }
     setInputText('')
     // reset textarea size
     const ta = textareaRef.current

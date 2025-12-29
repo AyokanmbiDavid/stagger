@@ -5,6 +5,11 @@ export const apiUrl = 'http://localhost:3000'
 
 export const userData = JSON.parse(localStorage.getItem('sonaData')) || [];
 
+export function authHeaders() {
+  const t = localStorage.getItem('staggerToken')
+  return t ? { Authorization: `Bearer ${t}` } : {}
+}
+
 export const Menus = [
     {name: 'Dashboard', icon: <HomeIcon className='w-6 h-6'/>, link: '/home',},
     {name: 'Message Us', icon: <ChatBubbleBottomCenterIcon className='h-6 w-6'/>, link: '/message'},

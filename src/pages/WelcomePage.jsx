@@ -27,9 +27,7 @@ const LoginReg = () => {
 
   useEffect(() => {
     try{
-        axios.get(`${apiUrl}/users`).then(res =>
-          setAllgetuser(res.data)
-        );
+        axios.get(`${apiUrl}/users`).then(res => setAllgetuser(res.data));
     } catch (e) {
       console.error(e)
     }
@@ -61,20 +59,25 @@ const LoginReg = () => {
   // submit form funstion
   function submitForm (e) {
     e.preventDefault();
-
-    let checkUserExist = allgetUser.find(e => e.mail == welForm.email && e.password == welForm.password)
-
-   if (!usernameErr && !ageErr && !checkUserExist) {
-    try{
-        axios.post(`${apiUrl}/users`, welForm);
-        localStorage.setItem('staggerLog', JSON.stringify({email: welForm.email,
-          username: welForm.username
-        }));
-        navigate('/home')
-    } catch (e) {
-      console.error(e)
-    }
-   }
+    if (usernameErr || ageErr) return
+    // create user and auto-login
+    axios.post(`${apiUrl}/users`, welForm)
+      .then(() => axios.post(`${apiUrl}/users/login`, { email: welForm.email, password: welForm.password }))
+      .then(res => {
+        const { token, user } = res.data || {}
+        if (token) {
+          localStorage.setItem('staggerToken', token)
+          localStorage.setItem('staggerUser', JSON.stringify(user))
+          localStorage.setItem('staggerLog', JSON.stringify({ email: user.email, username: user.username }))
+          navigate('/home')
+        } else {
+          // fallback: just navigate
+          navigate('/home')
+        }
+      })
+      .catch(err => {
+        console.error(err?.response?.data || err)
+      })
   }
 
   return (
