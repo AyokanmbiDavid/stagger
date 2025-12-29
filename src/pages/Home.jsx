@@ -68,64 +68,39 @@ const Home = () => {
         </h1>
 
         {/* search bar */}
-        <div className="relative w-full h-screen md:flex">
+        <div className="w-full py-3">
+          <motion.div
+          whileTap={{scale: 1.01}}
+          className="w-full flex justify-between items-center px-4 rounded-xl border-3 border-slate-300 p-1">
+            <input type="text"
+            placeholder='Search Chat...' 
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className='bg-transparent rounded-xl border-0 focus:outline-0'/>
 
-          {/* LEFT: contacts sidebar (mobile shows above chat; desktop left column) */}
-          <aside className="w-full md:w-80 lg:w-96 border-r border-slate-200 bg-white md:h-screen overflow-auto">
-            <div className="px-4 py-3">
-              <div className="mt-3">
-                <motion.div whileTap={{scale:1.01}} className="flex items-center gap-3 p-2 rounded-xl border border-slate-200">
-                  <input value={searchQuery} onChange={e => setSearchQuery(e.target.value)} placeholder="Search or start new chat" className="flex-1 bg-transparent outline-none" />
-                  <MagnifyingGlassIcon className="w-5 text-slate-500" />
-                </motion.div>
-              </div>
-            </div>
+            <MagnifyingGlassIcon  className='w-5'/>
+          </motion.div>
+        </div>
 
-            <div className="px-3 pb-6">
+        {/* body */}
+        <div className="w-full flex-1 overflow-y-auto">
+          {/* chat list */}
+          <div className="py-3">
+            <div className="flex flex-col gap-3">
               {loadingUsers ? (
                 <div className="p-4"><LoadingSmall/></div>
               ) : filteredUsers.length === 0 ? (
                 <div className="text-sm text-slate-500 p-4">No users found</div>
               ) : (
-                <div className="flex flex-col gap-2 mt-3">
-                  {filteredUsers.map((u,i) => (
-                    <Link key={u._id ?? u.id ?? i} to={`/chat/${u._id ?? u.id ?? i}`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-slate-50">
-                      <div className="w-10 h-10 rounded-full bg-slate-300 flex items-center justify-center text-white font-semibold">{(u.username || '?').slice(0,1).toUpperCase()}</div>
-                      <div className="flex-1">
-                        <div className="font-semibold text-slate-800">{u.username ?? u.email ?? 'Unknown'}</div>
-                        <div className="text-xs text-slate-500">{u.email ?? ''}</div>
-                      </div>
-                      <div className="text-xs text-slate-500">now</div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </aside>
-
-          {/* RIGHT: chat preview / main panel (on mobile this is the list area) */}
-          <main className="flex-1 h-screen overflow-auto bg-slate-50">
-            {/* On small screens show the list content (same as before) */}
-            <div className="md:hidden px-4 py-2">
-              {/* mobile list kept compact */}
-              {loadingUsers ? <LoadingSmall/> : (
-                filteredUsers.map((u,i) => (
-                  <Link key={u._id ?? u.id ?? i} to={`/chat/${u._id ?? u.id ?? i}`} className="w-full p-2 py-3 flex justify-between items-center border-2 border-slate-200 rounded-2xl mb-3">
+                filteredUsers.map((u, i) => (
+                  <Link key={u._id ?? u.id ?? i} to={`/chat/${u._id ?? u.id ?? i}`} className="w-full p-2 py-3 flex justify-between items-center border-2 border-slate-200 rounded-2xl">
                     <h1 className="text-lg text-slate-800 ">{u.username ?? u.email ?? 'Unknown'}</h1>
-                    <motion.button whileTap={{scale:0.96}} className="p-2 px-4 rounded-xl border-3 flex justify-center items-center gap-2 border-slate-300 text-slate-700 font-semibold">message <ChatBubbleLeftIcon className='w-5 text-green-600'/></motion.button>
+                    <motion.button whileTap={{scale: 0.96}} className="p-2 px-4 rounded-xl border-3 flex justify-center items-center gap-2 border-slate-300 text-slate-700 font-semibold">message <ChatBubbleLeftIcon className='w-5 text-green-600'/></motion.button>
                   </Link>
                 ))
               )}
             </div>
-
-            {/* Desktop middle panel - default content prompting selection */}
-            <div className="hidden md:flex items-center justify-center h-full">
-              <div className="text-center">
-                <h2 className="text-2xl font-semibold text-slate-700">Welcome to Stagger</h2>
-                <p className="text-slate-500 mt-2">Select a chat from the left to start messaging.</p>
-              </div>
-            </div>
-          </main>
+          </div>
         </div>
       </div>
     </Suspense>
