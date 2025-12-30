@@ -11,12 +11,11 @@ const Login = React.lazy(() => import('./pages/Login.jsx'));
 const ChatPage = React.lazy(() => import('./pages/ChatPage.jsx'));
 
 export default function App() {
-  const navigate = useNavigate()
-  
+ 
 
   return (
     <>
-     <div className="px-3">
+     <div className="px-3 lg:px-[300px]">
        <Routes>
           <Route path='/' element={<WelcomePage/>} />
           <Route path='/login' element={<Login/>} />

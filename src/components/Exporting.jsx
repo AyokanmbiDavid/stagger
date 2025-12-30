@@ -1,7 +1,7 @@
 import {  ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, UserIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import {motion} from 'framer-motion'
 
-export const apiUrl = 'http://localhost:3000'
+export const apiUrl = 'https://staggerbackend.onrender.com'
 
 export const userData = JSON.parse(localStorage.getItem('sonaData')) || [];
 
@@ -16,27 +16,6 @@ export const Menus = [
     {name:'Skills', icon: <WrenchIcon className="h-6 w-6" />, link:"/skills"},
     {name: 'Account', icon: <UserIcon className='w-6 h-6'/>, link: '/account',},
   ];
-
-  // frontend skills
-
-   export const frontendSkills = [
-    {name: 'HTML', desc: 'What the user see and touch'},
-    {name: 'CSS', desc: 'the structure and look of the website'},
-    {name: 'JavaScript', desc: 'the main bone of the website'},
-    {name: 'Boostrap', desc: 'A css libary'},
-    {name: 'Tailwind', desc: 'A css library (better)'},
-    {name: 'Api', desc: 'get,put,push,delete data from backend'},
-    {name: 'ReactJs', desc: 'A javaScript framework'}
-   ]
-
-  //  backend Skills
-  export const backendSkills = [
-    {name: 'NodeJs', desc: 'javaScript for backend'},
-    {name: 'ExpressJs', desc: 'Express for routing'},
-    {name: 'JsonwebToken', desc: 'secure token generation'},
-    {name: 'GoogleAuth', desc: 'For google login and signup'},
-    {name: 'Mern-stack', desc: 'Databse MongoDb'},
-  ]
 
 // loading small
 export function LoadingSmall () {

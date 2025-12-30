@@ -1,7 +1,7 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import {motion} from 'framer-motion'
 import { ChevronLeftIcon } from '@heroicons/react/24/outline'
-import { apiUrl, LoadingBig } from '../components/Exporting'
+import { apiUrl, LoadingBig, LoadingSmall } from '../components/Exporting'
 import { useNavigate } from 'react-router-dom'
 import { ReactTyped } from 'react-typed'
 import axios from 'axios'
@@ -14,10 +14,12 @@ const LoginReg = () => {
     email: '',
     username: '',
     age: '',
+    secQuestion: '',
     password: '',
   });
   const [usernameErr, setUsernameerr] = useState(false);
   const [ageErr, setAgeerr] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   function changeForm (e,name) {
     setWelForm({...welForm,
@@ -28,12 +30,17 @@ const LoginReg = () => {
   useEffect(() => {
     try{
         axios.get(`${apiUrl}/users`).then(res => setAllgetuser(res.data));
+        let checkLog = localStorage.getItem('staggerLog')
+      
+        if (checkLog) { 
+      navigate('/home')  }
     } catch (e) {
-      console.error(e)
+      console.error(e);
+
     }
   }, []);
 
-  // check f username available
+  // check if username available
   function checkUsername (username) {
     
    let checkUsername = allgetUser.find(e => username.target.value.toLowerCase() == e.username.toLowerCase());
@@ -60,6 +67,7 @@ const LoginReg = () => {
   function submitForm (e) {
     e.preventDefault();
     if (usernameErr || ageErr) return
+    setLoading(true)
     // create user and auto-login
     axios.post(`${apiUrl}/users`, welForm)
       .then(() => axios.post(`${apiUrl}/users/login`, { email: welForm.email, password: welForm.password }))
@@ -71,13 +79,13 @@ const LoginReg = () => {
           localStorage.setItem('staggerLog', JSON.stringify({ email: user.email, username: user.username }))
           navigate('/home')
         } else {
-          // fallback: just navigate
-          navigate('/home')
+          
         }
       })
       .catch(err => {
         console.error(err?.response?.data || err)
       })
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -95,14 +103,15 @@ const LoginReg = () => {
           />
         </h1>
 
+        {/* for mobile */}
         <motion.div
         initial={{y:30}}
         animate={{y:[-100,0,-50,0,-20,0.-10,0]}}
         transition={{duration: 0.6}}
-         className="md:hidden p-2 absolute w-full bottom-5 border-5 border-slate-300 rounded-4xl min-h-[460px] shadow-lg duration-200">
+         className="md:hidden p-2 absolute w-full bottom-5 border-5 border-slate-300 rounded-4xl max-h-[600px] overflow-y-auto shadow-lg duration-200">
           {/* new to stagger */}
           <h1 className="text-lg text-green-600 font-semibold w-full text-center my-3">
-            Welcome to Stagger
+            Welcome to Stagger Register
           </h1>
 
           {/* form for registeration */}
@@ -144,20 +153,39 @@ const LoginReg = () => {
                   </div>}
               </div>
 
-                 {/* Password */}
-                  <div className="flex flex-col gap-2 p-3">
-                    <h1 className="text-xs font-semibold text-slate-700">
-                      Password
-                    </h1>
-    
-                    <motion.input 
-                    whileFocus={{y:-5, scale: 1.03}}
-                    type="password"
-                      className="w-full border-3 border-slate-300 rounded-2xl p-3 "
-                      placeholder='Password'
-                      onChange={(e) => changeForm(e, 'password')}
-                      required />
+              {/* Password */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Password
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="password"
+                  className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                  placeholder='Password'
+                  onChange={(e) => changeForm(e, 'password')}
+                  required />
+              </div>
+
+                {/* security Question */}
+                <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Security Question
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="text"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Security question...' 
+                  onChange={(e) => {changeForm(e, 'secQuestion'); checkUsername(e)}}
+                  required/>
+
+                  <div className="text-sm text-red-500">
+                    make sure you remember this for resetting password
                   </div>
+              </div>
 
                {/* Age */}
               <div className="flex flex-col gap-2 p-3">
@@ -181,10 +209,11 @@ const LoginReg = () => {
 
               {/* submit button */}
               <motion.button
-              whileTap={{scale:0.97}}
-              className='w-full border-2 border-b-4 rounded-2xl p-3 bg-green-500 border-green-600 text-white mt-2 shadow-sm'
+                whileTap={{scale:0.97}}
+                className='w-full border-2 border-b-4 rounded-2xl p-3 bg-green-500 border-green-600 text-white mt-2 shadow-sm'
+                disabled={loading}
               >
-                Submit
+                {loading ? <LoadingSmall/> : 'Submit'}
               </motion.button>
 
              
@@ -196,6 +225,131 @@ const LoginReg = () => {
                </button>
           </Link>
         </motion.div>
+
+        {/* for desktop */}
+        <div className="w-full absolute flex bottom-5 justify-center">
+          <motion.div
+        initial={{y:30}}
+        animate={{y:[-100,0,-50,0,-20,0.-10,0]}}
+        transition={{duration: 0.6}}
+         className="max-md:hidden p-2 w-8/10  border-5 border-slate-300 rounded-4xl max-h-[500px] overflow-y-auto shadow-lg duration-200">
+          {/* new to stagger */}
+          <h1 className="text-lg text-green-600 font-semibold w-full text-center my-3">
+            Welcome to Stagger Register
+          </h1>
+
+          {/* form for registeration */}
+          <form
+          onSubmit={submitForm}
+           className="w-full">
+            {/* Email */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Email
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="email"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Email...'
+                 onChange={(e) => changeForm(e, 'email')}
+                 required />
+              </div>
+
+             {/* UserName */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  UserName
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="text"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='UserName...' 
+                  onChange={(e) => {changeForm(e, 'username'); checkUsername(e)}}
+                  required/>
+
+                  {welForm.username && 
+                  <div className={`${!usernameErr ? 'text-green-500' : 'text-red-600'}`}>
+                    {welForm.username} {!usernameErr ? 'is available' : 'is already taken'}
+                  </div>}
+              </div>
+
+              {/* Password */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Password
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="password"
+                  className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                  placeholder='Password'
+                  onChange={(e) => changeForm(e, 'password')}
+                  required />
+              </div>
+
+                {/* security Question */}
+                <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                  Security Question
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="text"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Security question...' 
+                  onChange={(e) => {changeForm(e, 'secQuestion'); checkUsername(e)}}
+                  required/>
+
+                  <div className="text-sm text-red-500">
+                    make sure you remember this for resetting password
+                  </div>
+              </div>
+
+               {/* Age */}
+              <div className="flex flex-col gap-2 p-3">
+                <h1 className="text-xs font-semibold text-slate-700">
+                 Age
+                </h1>
+
+                <motion.input 
+                whileFocus={{y:-5, scale: 1.03}}
+                type="number"
+                 className="w-full border-3 border-slate-300 rounded-2xl p-3 "
+                 placeholder='Age (15 and above)...'
+                 onChange={(e) => {changeForm(e, 'age'); checkAge(e)}} 
+                 required/>
+
+                 {welForm.age &&
+                 <div className={`${ageErr ? 'text-red-600' : 'text-green-600'}`}>
+                  {ageErr ? 'you are not old enough' : 'ok good to go'}
+                </div>}
+              </div>
+
+              {/* submit button */}
+              <motion.button
+                whileTap={{scale:0.97}}
+                className='w-full border-2 border-b-4 rounded-2xl p-3 bg-green-500 border-green-600 text-white mt-2 shadow-sm'
+                disabled={loading}
+              >
+                {loading ? <LoadingSmall/> : 'Register'}
+              </motion.button>
+
+             
+           </form> 
+           {/* login button */}
+           <Link to={'/login'}>
+               <button className='w-full border-2 border-b-4 rounded-2xl p-3 mt-3 border-blue-600'>
+               to Login
+               </button>
+          </Link>
+        </motion.div>
+        </div>
        </div>
        </Suspense>
     </>

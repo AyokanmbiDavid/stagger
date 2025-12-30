@@ -15,7 +15,7 @@ const Navbar = () => {
     <Suspense fallback={<LoadingBig/>}>
       <div className="w-full bottom-5 absolute">
         <motion.nav
-        className='w-full p-2 border-2 border-slate-300 rounded-2xl lg:hidden shadow-lg'>
+        className='w-full p-2 border-2 border-slate-300 rounded-2xl shadow-lg'>
           <div className="flex gap-2 w-full justify-evenly">
             {Menus.map((e,i) => (
               <>
