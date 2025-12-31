@@ -1,5 +1,6 @@
 import {  ChatBubbleBottomCenterIcon, ClockIcon, HomeIcon, UserIcon, WrenchIcon } from "@heroicons/react/24/outline";
 import {motion} from 'framer-motion'
+import { Link } from "react-router-dom";
 
 export const apiUrl = 'https://staggerbackend.onrender.com'
 
@@ -11,9 +12,9 @@ export function authHeaders() {
 }
 
 export const Menus = [
-    {name: 'Dashboard', icon: <HomeIcon className='w-6 h-6'/>, link: '/home',},
-    {name: 'Message Us', icon: <ChatBubbleBottomCenterIcon className='h-6 w-6'/>, link: '/message'},
-    {name:'Skills', icon: <WrenchIcon className="h-6 w-6" />, link:"/skills"},
+    {name: 'Home', icon: <HomeIcon className='w-6 h-6'/>, link: '/home',},
+    {name: 'Groups', icon: <ChatBubbleBottomCenterIcon className='h-6 w-6'/>, link: '/groups'},
+    {name:'Settings', icon: <WrenchIcon className="h-6 w-6" />, link:"/settings"},
     {name: 'Account', icon: <UserIcon className='w-6 h-6'/>, link: '/account',},
   ];
 
@@ -48,3 +49,39 @@ export function LoadingBig () {
       </div>
   )
 }
+
+export const AllGroups = [{
+    id:1,
+    name: '~Collab'
+  },
+  {
+    id:2,
+    name:'~Sensor'
+  },
+  {
+    id: 3,
+    name: '~MegaBusiness'
+  },
+  {
+    id:4,
+    name:'SmTom Boy'
+  }
+];
+export const AllChat = [
+  {
+    id:1,
+    name: '~BigDave'
+  },
+  {
+    id:2,
+    name:'~AuraNostra~'
+  },
+  {
+    id: 3,
+    name: '~SmTom Boy'
+  },
+  {
+    id:4,
+    name:'Gaza'
+  }
+];

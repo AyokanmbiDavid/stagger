@@ -6,10 +6,13 @@ const Navbar = React.lazy(() => import('../components/Navbar.jsx'))
 const Skills = () => {
   return (
     <>
-    <Navbar/>
-      <Suspense fallback={<LoadingBig/>}>
+    <Suspense fallback={<LoadingBig/>}>
+      <div className="w-full relative h-screen flex">
+        <Navbar/>
 
-      </Suspense>
+        <div className="w-full"></div>
+      </div>
+    </Suspense>
     </>
   )
 }
