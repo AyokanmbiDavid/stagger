@@ -27,7 +27,7 @@ const Groups = () => {
             </h1>
 
             {/* search value */}
-            <div className="w-full flex gap-2 mt-2">
+            <div className="w-full flex gap-2 px-3 py-2 mt-2">
               <input type="text" 
             className="p-3 text-sm rounded-xl bg-slate-200 w-7/10 max-md:w-full shadow-sm border-0"
             placeholder='Search Friends here..'

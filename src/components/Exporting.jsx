@@ -50,7 +50,7 @@ export function LoadingBig () {
   )
 }
 
-export const AllGroups = [{
+export let AllGroups = [{
     id:1,
     name: '~Collab'
   },
@@ -67,21 +67,107 @@ export const AllGroups = [{
     name:'SmTom Boy'
   }
 ];
-export const AllChat = [
+export let AllUsers = [
   {
     id:1,
-    name: '~BigDave'
+    name: '~BigDave',
   },
   {
     id:2,
-    name:'~AuraNostra~'
+    name:'~AuraNostra~',
   },
   {
     id: 3,
-    name: '~SmTom Boy'
+    name: '~SmTom Boy',
   },
   {
     id:4,
-    name:'Gaza'
+    name:'Gaza',
   }
 ];
+
+export let AllChat = [
+      {
+        participant: [1,2],
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am',
+            sender:2,
+          },
+          {
+            mes: 'how do you do',
+            timeStamp: '9:15 am',
+            sender:1,
+          }
+        ]
+      },
+       {
+        participant: [1,1],
+        sender:2,
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am'
+          }
+        ]
+      },
+       {
+        participant: [1,3],
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am',
+            sender:2,
+          },
+          {
+            mes: 'where are you',
+            timeStamp: '9:15 am',
+            sender:1,
+          }
+        ]
+      },
+      {
+        participant: [2,3],
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am',
+            sender:2,
+          },
+          {
+            mes: 'where are you',
+            timeStamp: '9:15 am',
+            sender:1,
+          }
+        ]
+      },{
+        participant: [2,2],
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am',
+            sender:2,
+          },
+          {
+            mes: 'where are you',
+            timeStamp: '9:15 am',
+            sender:1,
+          }
+        ]
+      },{
+        participant: [3,3],
+        message: [
+          {
+            mes: 'hi',
+            timeStamp: '9:15 am',
+            sender:2,
+          },
+          {
+            mes: 'where are you',
+            timeStamp: '9:15 am',
+            sender:1,
+          }
+        ]
+      },
+]

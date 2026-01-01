@@ -1,6 +1,6 @@
 import { UserIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import React, { useEffect, useState } from 'react'
-import { AllChat } from '../components/Exporting.jsx';
+import { AllChat, AllUsers } from '../components/Exporting.jsx';
 import UserCard from '../components/UserCard.jsx';
 
 const Navbar = React.lazy(() => import('../components/Navbar.jsx'))
@@ -10,7 +10,7 @@ const Home = () => {
 
   useEffect(() => {
     if (searchvalue){
-      setFIltSearch(AllChat.filter(e => e.name.toLowerCase().includes(searchvalue.toLowerCase())
+      setFIltSearch(AllUsers.filter(e => e.name.toLowerCase().includes(searchvalue.toLowerCase())
       ))
     }
   }, [searchvalue])
@@ -51,7 +51,7 @@ const Home = () => {
           </h1>
 
           <div className="flex flex-col w-full">
-              {AllChat.map((newChat) => 
+              {AllUsers.map((newChat) => 
                 <UserCard name={newChat.name}  id={newChat.id}/>
               )}
           </div>

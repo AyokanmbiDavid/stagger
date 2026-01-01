@@ -9,7 +9,7 @@ const Navbar = () => {
   return (
     <>
       {/* for mobile view */}
-      <div className="lg:hidden absolute top-0 left-0 w-full border-b-3 border-b-slate-200 p-2 py-3 flex justify-between">
+      <div className="lg:hidden absolute top-0 left-0 w-full border-b-3 bg-white border-b-slate-200 p-2 py-3 flex justify-between">
         <h1 className="text-lg font-semibold text-slate-800">Stagger</h1>
 
         <button 
