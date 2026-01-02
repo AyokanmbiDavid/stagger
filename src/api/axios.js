@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://staggerbackend.onrender.com/api",
+  baseURL: "https://staggerbackend.onrender.com",
 });
 
 // Add interceptor to include the token in every request

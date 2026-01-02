@@ -9,7 +9,7 @@ export const useSocket = (userId) => {
   useEffect(() => {
     if (userId) {
       // Replace with your backend URL
-      const newSocket = io("http://localhost:5000", {
+      const newSocket = io("https://staggerbackend.onrender.com", {
         query: { userId },
       });
 

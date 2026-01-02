@@ -4,7 +4,7 @@ import ChatWindow from "../components/ChatWindow";
 import { useSocket } from "../hooks/useSocket";
 
 const ChatPage = () => {
-  const [selectedUser, setSelectedUser] = useState(null);
+  const [selectedUser, setSelectedUser] = useState({id:1, email: 'david@gmail.com', username: 'Big Dave'});
   const [isTyping, setIsTyping] = useState(false); // Track if the other person is typing
   const userId = localStorage.getItem("userId");
   
@@ -38,14 +38,14 @@ const ChatPage = () => {
       
       {/* PROFESSIONAL ADDITION: Connection Status Bar */}
       {!isConnected && (
-        <div className="bg-amber-500 text-white text-[10px] py-1 text-center font-bold tracking-widest uppercase animate-pulse">
+        <div className="bg-green-500 text-white text-[10px] py-1 text-center font-bold tracking-widest uppercase animate-pulse">
           Connecting to secure server...
         </div>
       )}
 
       <div className="flex flex-1 overflow-hidden">
         {/* SIDEBAR: Visible on Desktop, Hidden on Mobile if chat is open */}
-        <div className={`${selectedUser ? "hidden" : "block"} md:block w-full md:w-80 h-full border-r bg-white`}>
+        <div className={`${selectedUser ? "hidden" : "block"} md:block w-full md:w-80 h-full border-r-2 border-slate-200 shadow-xl bg-white`}>
           <Sidebar 
             socket={socket} 
             onlineUsers={onlineUsers}

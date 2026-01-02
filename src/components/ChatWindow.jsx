@@ -144,7 +144,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
   return (
     <div className="flex flex-col h-full bg-[#f0f2f5]">
       {/* --- Updated Header with Typing Status --- */}
-      <div className="h-16 border-b flex items-center px-4 gap-3 bg-white shadow-sm shrink-0">
+      <div className="h-16 flex items-center px-4 gap-3 bg-white shadow-sm shrink-0">
         <button onClick={onBack} className="md:hidden text-gray-600"><ArrowLeft size={24} /></button>
         <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold">
           {user.username.charAt(0).toUpperCase()}
@@ -174,7 +174,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
       </div>
 
       {/* Input Form */}
-      <form onSubmit={handleSend} className="p-3 bg-white border-t flex items-center gap-2 shrink-0">
+      <form onSubmit={handleSend} className="p-3 bg-white shadow-sm flex items-center gap-2 shrink-0">
         <label className="p-2 text-gray-500 hover:bg-gray-100 rounded-full cursor-pointer">
           <Image size={20} /><input type="file" className="hidden" accept="image/*" onChange={handleImageUpload} />
         </label>

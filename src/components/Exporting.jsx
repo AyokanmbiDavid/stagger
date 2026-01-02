@@ -25,7 +25,7 @@ export function LoadingSmall () {
       <motion.div
        animate={{rotate:[0,360]}}
       transition={{duration: 1,ease: 'easeIn' , repeat: Infinity}}
-      className="border-2 rounded-full p-3 border-l-0 border-t-0 border-green-600">
+      className="border-2 rounded-full p-3 border-l-0 border-t-0 border-green-200">
 
       </motion.div>
           
