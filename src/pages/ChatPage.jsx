@@ -1,159 +1,84 @@
-import React, { Suspense, useEffect, useState } from 'react'
-import { AllChat, AllUsers, LoadingBig, LoadingSmall } from '../components/Exporting.jsx'
-import { data, Link, useParams } from 'react-router-dom'
-import { ArrowLeftIcon, PaperAirplaneIcon, PencilIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline'
-
-const Navbar = React.lazy(() => import('../components/Navbar.jsx'))
+import { useState, useEffect } from "react";
+import Sidebar from "../components/Sidebar";
+import ChatWindow from "../components/ChatWindow";
+import { useSocket } from "../hooks/useSocket";
 
 const ChatPage = () => {
-  const id = useParams();
-  const [loading, setLoading] = useState(false);
-  let senderId = JSON.parse(localStorage.getItem("staggerLog")).id
-  let recieverId = id.chatId
-  const [chatUser, setChatUser] = useState(AllUsers.filter(e => e.id == recieverId));
-  const [filtUserchat, setFilterUserchat] = useState(AllChat.filter(e => e.participant.find(e => e == recieverId))[0].message)
-  const [selected, setSelect] = useState();
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [isTyping, setIsTyping] = useState(false); // Track if the other person is typing
+  const userId = localStorage.getItem("userId");
+  
+  // 1. Initialize Socket and Connection State
+  const { socket, onlineUsers, isConnected } = useSocket(userId);
 
-  const [Form, setForm] = useState({
-    mes: '',
-    timeStamp: new Date().getHours().toLocaleString() + ':' + new Date().getMinutes().toLocaleString(),
-    sender: [senderId]
-  })
-
+  // 2. Listen for "Typing" events from the server
   useEffect(() => {
-    setLoading(true);
-    try {
-      setLoading(false);
-    } catch (e) {
-      setLoading(false)
-    }
-  
-  }, [])
-  
+    if (!socket) return;
 
-  async function  submitText(e) {
-    e.preventDefault();
-    if (filtUserchat) {  
-      if (Form.mes) {
-        filtUserchat.push(Form)
+    socket.on("user_typing", ({ senderId }) => {
+      if (senderId === selectedUser?._id) {
+        setIsTyping(true);
       }
-    } else {
-      AllChat.push({
-          participant: [senderId,recieverId],
-        message: [
-          Form
-        ]
-      });
-    }
-    setForm({...Form, 
-      'mes' : ''
-    })
-  }
+    });
 
-  async function selectMess (e) {
-    if (selected == filtUserchat.indexOf(e)) {
-      setSelect()
-    } else {
-      setSelect(filtUserchat.indexOf(e))
-    }
-  }
+    socket.on("user_stop_typing", ({ senderId }) => {
+      if (senderId === selectedUser?._id) {
+        setIsTyping(false);
+      }
+    });
 
-  async function deleteMess(selected) {
-    setFilterUserchat(filtUserchat.map(e => e.id != 1));
-    setSelect()
-  }
+    return () => {
+      socket.off("user_typing");
+      socket.off("user_stop_typing");
+    };
+  }, [socket, selectedUser]);
 
   return (
-    <>
-      <Suspense fallback={<LoadingBig/>}>
-        <div className="w-full h-screen relative flex">
-          <Navbar/>
-
-          <div className="relative w-full p-2 max-md:mt-15 ">
-            {/* top navbar */}
-            <div className="w-full px-2 py-1 flex z-10 bg-white justify-between border-b-3 border-slate-300">
-              {selected ? 
-              <>
-                <div className="flex items-center justify-between w-full bg-white">
-                  <div className="flex gap-2">
-                    <XMarkIcon className='w-5' onClick={() => setSelect()}/>
-                    
-                    <h1 className="text-lg text-slate-700">
-                      Selected
-                    </h1>
-                  </div>
-
-                  
-                  <div className="flex items-center gap-5">
-                    <TrashIcon className='w-5 text-red-500 hover:bg-red-100' 
-                    onClick={() => deleteMess()}
-                  />
-                  <PencilIcon className='w-5 text-yellow-600 hover:bg-yellow-100' />
-                  </div>
-                </div>
-              </> :
-              <div className="flex items-center gap-2 bg-white">
-                <Link to={'/home'}
-                className='p-2 rounded-md hover:bg-slate-100'>
-                  <ArrowLeftIcon className='w-5 text-slate-800'/>
-                </Link>
-
-                <h1 className="text-lg text-slate-700">
-                  {loading ? <LoadingSmall/> :
-                  chatUser[0].name}
-                </h1>
-              </div>}
-              
-              {/* main body */}
-              <div className="w-full absolute bottom-20 left-0 ">
-                <div className="flex flex-col max-h-[530px] overflow-y-auto">
-                  {filtUserchat.length != 0 ?
-                  <>
-                    {filtUserchat.map((e) => (
-                      <div 
-                      onClick={() => selectMess(e)}
-                      className={`border-b-2 w-full border-slate-200 p-2 flex flex-col  ${e.sender == 2 ? 'items-start' : 'items-end'}`}>
-                          <h1 className="text-lg max-w-7/10">
-                            {e.mes}
-                          </h1>
-                          <h1 className="text-green-500">
-                            {e.timeStamp}
-                          </h1>
-                          {e.sender == 2 && 
-                          <h1 className='text-sm'>
-                            {chatUser[0].name}
-                            </h1>}
-                      </div>
-                    ))}
-                  </>
-                : 
-                <h1 className='text-center w-full py-3 text-slate-700'></h1>}
-                </div>
-              </div>
-
-              {/* input */}
-              <form
-              onSubmit={submitText}
-              className="absolute left-0 w-full bottom-2 flex items-center gap-2 border-t-2 border-slate-200 p-2">
-                    <input type="text"
-                    placeholder='Type here..'
-                    value={Form.mes}
-                    onChange={(e) => {setForm({...Form,
-                    'mes': e.target.value})
-                    }}
-                    className="w-full rounded-xl bg-slate-100 border-0 p-3" />
-
-                    <button 
-                    className="p-3 rounded-xl bg-green-500">
-                      <PaperAirplaneIcon className='w-5 text-white rotate-[300deg]' />
-                    </button>
-              </form>
-            </div>
-          </div>
+    <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
+      
+      {/* PROFESSIONAL ADDITION: Connection Status Bar */}
+      {!isConnected && (
+        <div className="bg-amber-500 text-white text-[10px] py-1 text-center font-bold tracking-widest uppercase animate-pulse">
+          Connecting to secure server...
         </div>
-      </Suspense>
-    </>
-  )
-}
+      )}
 
-export default ChatPage
+      <div className="flex flex-1 overflow-hidden">
+        {/* SIDEBAR: Visible on Desktop, Hidden on Mobile if chat is open */}
+        <div className={`${selectedUser ? "hidden" : "block"} md:block w-full md:w-80 h-full border-r bg-white`}>
+          <Sidebar 
+            socket={socket} 
+            onlineUsers={onlineUsers}
+            onSelectUser={(user) => setSelectedUser(user)} 
+            selectedUserId={selectedUser?._id}
+          />
+        </div>
+
+        {/* CHAT WINDOW: Hidden on Mobile if no user selected */}
+        <div className={`${!selectedUser ? "hidden" : "block"} flex-1 h-full bg-white relative`}>
+          {selectedUser ? (
+            <ChatWindow 
+              user={selectedUser} 
+              socket={socket} 
+              isTyping={isTyping} // Pass typing status to header
+              onBack={() => setSelectedUser(null)} 
+            />
+          ) : (
+            /* Empty State for Desktop */
+            <div className="hidden md:flex flex-col items-center justify-center h-full text-gray-400 bg-slate-50">
+               <div className="w-20 h-20 bg-gray-200 rounded-full mb-4 flex items-center justify-center">
+                  <svg className="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                  </svg>
+               </div>
+               <p className="text-lg font-medium">Select a friend to start chatting</p>
+               <p className="text-sm">Your messages are secured with end-to-end encryption</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ChatPage;
