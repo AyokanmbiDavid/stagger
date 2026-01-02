@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { ArrowLeft, Send, Image, Mic, Trash2 } from "lucide-react";
 import API from "../api/axios";
 import axios from "axios";
+import {LoadingSmall} from '../components/Exporting.jsx'
 
 const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping prop
   const [messages, setMessages] = useState([]);
@@ -10,6 +11,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
   const scrollRef = useRef();
   const mediaRecorder = useRef(null);
   const typingTimeoutRef = useRef(null); // Ref for typing timeout
+  const [loading, setLoading] = useState(false);
 
   // 1. Auto-scroll
   useEffect(() => {
@@ -19,10 +21,13 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
   // 2. Fetch history
   useEffect(() => {
     const fetchMessages = async () => {
+      setLoading(true);
       try {
-        const { data } = await API.get(`/api/auth/messages/${user._id}`);
+        const { data } = await API.get(`/api/messages/${user._id}`);
         setMessages(data);
+        setLoading(false);
       } catch (err) {
+        setLoading(false);
         console.error("Error fetching messages:", err);
       }
     };
@@ -66,6 +71,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
   // 4. Handle Text Send
   const handleSend = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (!newMessage.trim()) return;
 
     // Stop typing immediately when sending
@@ -73,15 +79,19 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
 
     const messageData = { receiverId: user._id, text: newMessage, messageType: "text" };
     try {
-      const { data } = await API.post("/messages/send", messageData);
+      const { data } = await API.post("/api/messages/send", messageData);
       socket.emit("send_message", data);
       setMessages((prev) => [...prev, data]);
       setNewMessage("");
-    } catch (err) { console.error(err); }
+      setLoading(false)
+    } catch (err) { 
+      setLoading(false)
+      console.error(err); }
   };
 
   // 5. Handle Image Upload
   const handleImageUpload = async (e) => {
+    setLoading(true);
     const file = e.target.files[0];
     if (!file) return;
     const formData = new FormData();
@@ -97,11 +107,15 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
       });
       socket.emit("send_message", data);
       setMessages((prev) => [...prev, data]);
-    } catch (err) { console.error(err); }
+      setLoading(false);
+    } catch (err) { 
+      setLoading(false);
+      console.error(err); }
   };
 
   // 6. Voice Note Upload
   const sendVoiceNote = async (audioBlob) => {
+    setLoading(true);
     const formData = new FormData();
     formData.append("file", audioBlob);
     formData.append("upload_preset", "stagger_chat");
@@ -115,7 +129,10 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
       });
       socket.emit("send_message", data);
       setMessages((prev) => [...prev, data]);
-    } catch (err) { console.error("Voice upload failed", err); }
+      setLoading(false);
+    } catch (err) {
+      setLoading(false)
+       console.error("Voice upload failed", err); }
   };
 
   // 7. Start/Stop Recording
@@ -195,7 +212,9 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
           className={`flex-1 p-2 rounded-full px-4 focus:outline-none text-sm ${isRecording ? "bg-red-50" : "bg-gray-100"}`}
         />
         
-        <button type="submit" className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700"><Send size={20} /></button>
+        <button type="submit" className="bg-blue-600 text-white p-2 rounded-full hover:bg-blue-700">
+          {loading? <LoadingSmall/> : <Send size={20} />}
+        </button>
       </form>
     </div>
   );

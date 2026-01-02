@@ -14,10 +14,10 @@ const LoginPage = () => {
     e.preventDefault();
     try {
       const { data } = await API.post("/api/auth/login", formData);
-      
+      console.log(data._id)
       // SAVE DATA TO LOCAL STORAGE
       localStorage.setItem("token", data.token);
-      localStorage.setItem("userId", data.user._id);
+      localStorage.setItem("userId", data._id);
       setLoading(false)
       navigate("/"); // Go to the Chat Page
     } catch (err) {
@@ -25,6 +25,7 @@ const LoginPage = () => {
       if(err?.response?.message) {
         setError(err?.response?.message || "Invalid credentials");
       } else {
+       console.log(err)
         setError(err?.message)
       }        
       setTimeout(() => {setError()}, 3000)

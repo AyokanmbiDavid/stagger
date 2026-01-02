@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../api/axios";
 
 const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
-  const [users, setUsers] = useState([{_id:1, username:'Big Dave', email: 'david@gmail.com'},{_id:2, username:'Tom Bee', email: 'tombee@gmail.com'}]);
+  const [users, setUsers] = useState([]);
   const [onlineUsers, setOnlineUsers] = useState([]); // Track online IDs
   const currentUserId = localStorage.getItem("userId");
   const [filtUser, setFiltuser] = useState()
