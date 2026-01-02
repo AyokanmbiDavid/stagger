@@ -13,7 +13,7 @@ const SignupPage = () => {
     setLoading(true)
     e.preventDefault();
     try {
-      await API.post("/auth/signup", formData);
+      await API.post("/api/auth/signup", formData);
       setLoading(false)
       navigate("/login"); // Redirect to login after successful signup
     } catch (err) {

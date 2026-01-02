@@ -20,7 +20,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => { // Added isTyping p
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const { data } = await API.get(`/messages/${user._id}`);
+        const { data } = await API.get(`/api/auth/messages/${user._id}`);
         setMessages(data);
       } catch (err) {
         console.error("Error fetching messages:", err);

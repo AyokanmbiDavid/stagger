@@ -4,7 +4,7 @@ import ChatWindow from "../components/ChatWindow";
 import { useSocket } from "../hooks/useSocket";
 
 const ChatPage = () => {
-  const [selectedUser, setSelectedUser] = useState({id:1, email: 'david@gmail.com', username: 'Big Dave'});
+  const [selectedUser, setSelectedUser] = useState();
   const [isTyping, setIsTyping] = useState(false); // Track if the other person is typing
   const userId = localStorage.getItem("userId");
   

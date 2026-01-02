@@ -13,7 +13,7 @@ const LoginPage = () => {
     setLoading(true)
     e.preventDefault();
     try {
-      const { data } = await API.post("/auth/login", formData);
+      const { data } = await API.post("/api/auth/login", formData);
       
       // SAVE DATA TO LOCAL STORAGE
       localStorage.setItem("token", data.token);

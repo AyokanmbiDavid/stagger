@@ -11,7 +11,7 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
     // 1. Fetch all users from DB
     const fetchUsers = async () => {
       try {
-        const { data } = await API.get("/auth/users");
+        const { data } = await API.get("/api/auth/users");
         setUsers(data.filter(u => u._id !== currentUserId));
       } catch (err) { console.error(err); }
     };
