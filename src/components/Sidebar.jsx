@@ -1,11 +1,17 @@
 import { useEffect, useState } from "react";
 import API from "../api/axios";
+import UserCard from "./UserCard";
+import Navbar from "./Navbar";
 
 const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState([
+    {_id:1,username:'Big Dave',email:'david@gmail.com', unread: false},
+    {_id:2,username:'Aura',email:'aura@gmail.com', unread: false},
+  ]);
   const [onlineUsers, setOnlineUsers] = useState([]); // Track online IDs
   const currentUserId = localStorage.getItem("userId");
-  const [filtUser, setFiltuser] = useState()
+  const [filtUser, setFiltuser] = useState();
+  const [FiltType, setFilttype] = useState('all')
 
   useEffect(() => {
     // 1. Fetch all users from DB
@@ -28,8 +34,12 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
   }, [socket, currentUserId]);
 
   return (
-    <div className="flex flex-col h-full bg-white px-2">
-      <div className="p-4 py-3 border-b-4 border-b-green-200 font-bold text-xl text-green-600">Chats</div>
+    <>
+      <div className="flex relative justify-around">
+        <Navbar/>
+
+    <div className="flex flex-col h-screen bg-white px-2 w-full">
+      <div className="p-4 py-3 font-bold text-xl text-green-600">Chats</div>
 
       {/* search bar */}
       <div className="w-full flex justify-center my-2">
@@ -37,6 +47,19 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
         className="w-full rounded-xl p-3 bg-slate-100 border-2 border-slate-200 text-sm"
         onChange={(e) => setFiltuser(users.filter(d => d.username.toLowerCase().includes(e.target.value.toLowerCase())))}
         placeholder="Searn Users"/>
+      </div>
+
+      {/* filter type */}
+      <div className="w-full flex my-2">
+        {[{name:"All", set:"all"},{name:"Unread", set:"unread"},].map((filt, i) => (
+          <>
+            <div 
+            onClick={() => setFilttype(filt.set)}
+            className={`p-1 px-4 text-sm cursor-pointer ${FiltType == filt.set ? 'bg-green-100 rounded-full ' : ''}`}>
+              {filt.name}
+            </div>
+          </>
+        ))}
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -107,6 +130,8 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
         </>}
       </div>
     </div>
+      </div>
+    </>
   );
 };
 

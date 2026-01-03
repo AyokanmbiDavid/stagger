@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import ChatPage from "./pages/ChatPage";
+import ProfilePage from './pages/EditPage.jsx'
 
 function App() {
   const isAuthenticated = !!localStorage.getItem("token");
@@ -16,6 +17,10 @@ function App() {
         <Route 
           path="/" 
           element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />} 
+        />
+        <Route 
+          path="/edit" 
+          element={isAuthenticated ? <ProfilePage /> : <Navigate to="/login" />} 
         />
       </Routes>
     </Router>
