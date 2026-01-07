@@ -5,8 +5,6 @@ import Navbar from "./Navbar";
 
 const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
   const [users, setUsers] = useState([
-    {_id:1,username:'Big Dave',email:'david@gmail.com', unread: false},
-    {_id:2,username:'Aura',email:'aura@gmail.com', unread: false},
   ]);
   const [onlineUsers, setOnlineUsers] = useState([]); // Track online IDs
   const currentUserId = localStorage.getItem("userId");
@@ -35,18 +33,18 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
 
   return (
     <>
-      <div className="flex relative justify-around">
+      <div className="flex relative justify-around bg-gray-100 gap-2">
         <Navbar/>
 
-    <div className="flex flex-col h-screen bg-white px-2 w-full">
-      <div className="p-4 py-3 font-bold text-xl text-green-600">Chats</div>
+    <div className="flex flex-col h-screen bg-white px-2 w-full rounded-2xl border-2 border-gray-200">
+      <div className="p-4 py-3 font-bold text-lg text-green-600">Chats</div>
 
       {/* search bar */}
-      <div className="w-full flex justify-center my-2">
+      <div className="w-full flex justify-center my-2 border-b border-slate-200 ">
         <input type="text"
-        className="w-full rounded-xl p-3 bg-slate-100 border-2 border-slate-200 text-sm"
+        className="w-full p-2 rounded-2xl border-gray-200 border-2 text-sm focus:outline-none mb-2"
         onChange={(e) => setFiltuser(users.filter(d => d.username.toLowerCase().includes(e.target.value.toLowerCase())))}
-        placeholder="Searn Users"/>
+        placeholder="Search Users"/>
       </div>
 
       {/* filter type */}
@@ -55,7 +53,7 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
           <>
             <div 
             onClick={() => setFilttype(filt.set)}
-            className={`p-1 px-4 text-sm cursor-pointer ${FiltType == filt.set ? 'bg-green-100 rounded-full ' : ''}`}>
+            className={`p-1 px-4 text-sm cursor-pointer ${FiltType == filt.set ? 'border-2 border-gray-200 rounded-full  text-green-600' : 'border-2 border-green-50 '}`}>
               {filt.name}
             </div>
           </>
@@ -73,12 +71,12 @@ const Sidebar = ({ onSelectUser, socket, selectedUserId }) => {
             <div
               key={user._id}
               onClick={() => onSelectUser(user)}
-              className={`flex items-center gap-3 p-4 cursor-pointer border-b-2 border-slate-200 transition ${
+              className={`flex items-center gap-3 p-2 cursor-pointer  transition ${
                 isSelected ? "bg-blue-50" : "hover:bg-gray-50"
               }`}
             >
               <div className="relative">
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-600">
+                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-600">
                   {user.username.charAt(0).toUpperCase()}
                 </div>
                 {/* Green Dot for Online Status */}

@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, User, Mail, Lock, Trash2, Save } from "lucide-react";
+import { ArrowLeft, User, Mail, Lock, Trash2, Save, Unlock } from "lucide-react";
 import API from "../api/axios";
 import { LoadingSmall } from "../components/Exporting";
 
 const ProfilePage = () => {
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "", security_question:""});
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
@@ -16,9 +16,9 @@ const ProfilePage = () => {
     const fetchUserData = async () => {
       try {
         const { data } = await API.get("/api/auth/me");
-        setFormData({ username: data.username, email: data.email, password: "" });
+        setFormData({ username: data.username, email: data.email, password: "", security_question: data.security_question });
       } catch (err) {
-        setError("Failed to load user data");
+        setError("Network Error");
       }
     };
     fetchUserData();
@@ -80,12 +80,15 @@ const ProfilePage = () => {
         <form onSubmit={handleUpdate} className="space-y-4">
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-500 ml-1">Username</label>
-            <div className="relative">
-               <User className="absolute left-3 top-4 text-gray-400" size={18} />
+            <div className="border-2 border-gray-200 rounded-2xl focus:outline-none w-full flex justify-between items-center">
+               <span className="p-3 rounded-l-2xl bg-gray-200 text-gray-700">
+                <User className="" />
+               </span>
                <input
                 type="text"
                 value={formData.username}
-                className="w-full p-3 pl-10 py-4 border-2 border-slate-200 bg-slate-100 rounded-xl"
+                placeholder="Username..."
+                className="border-0 w-full rounded-r-2xl"
                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
                 required
               />
@@ -94,12 +97,15 @@ const ProfilePage = () => {
 
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-500 ml-1">Email Address</label>
-            <div className="relative">
-               <Mail className="absolute left-3 top-4 text-gray-400" size={18} />
+             <div className="border-2 border-gray-200 rounded-2xl focus:outline-none w-full flex justify-between items-center">
+               <span className="p-3 rounded-l-2xl bg-gray-200 text-gray-700">
+                <Mail className="" />
+               </span>
                <input
                 type="email"
                 value={formData.email}
-                className="w-full p-3 pl-10 py-4 border-2 border-slate-200 bg-slate-100 rounded-xl"
+                placeholder="Email.."
+                className="w-full border-0 rounded-r-2xl"
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 required
               />
@@ -108,18 +114,35 @@ const ProfilePage = () => {
 
           <div className="space-y-1">
             <label className="text-xs font-bold text-gray-500 ml-1">New Password (Leave blank to keep current)</label>
-            <div className="relative">
-               <Lock className="absolute left-3 top-4 text-gray-400" size={18} />
+             <div className="border-2 border-gray-200 rounded-2xl focus:outline-none w-full flex justify-between items-center">
+               <span className="p-3 rounded-l-2xl bg-gray-200 text-gray-700">
+                <Lock className="" />
+               </span>
                <input
                 type="password"
                 placeholder="••••••••"
-                className="w-full p-3 pl-10 py-4 border-2 border-slate-200 bg-slate-100 rounded-xl"
+                className="w-full border-0 rounded-r-2xl"
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
               />
             </div>
           </div>
 
-          <button type="submit" className="w-full bg-green-600 text-white p-3 py-4 rounded-xl font-bold hover:bg-green-700 transition flex items-center justify-center gap-2">
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-gray-500 ml-1">Security Question</label>
+             <div className="border-2 border-gray-200 rounded-2xl focus:outline-none w-full flex justify-between items-center">
+               <span className="p-3 rounded-l-2xl bg-gray-200 text-gray-700">
+                <Unlock className="" />
+               </span>
+               <input
+                type="text"
+                placeholder="Security Question"
+                className="w-full border-0 rounded-r-2xl"
+                onChange={(e) => setFormData({ ...formData, security_question: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <button type="submit" className="w-full bg-green-600 text-white p-3  rounded-2xl font-bold hover:bg-green-700 transition flex items-center justify-center gap-2">
              {loading ? <LoadingSmall /> : <><Save size={20} /> Save Changes</>}
           </button>
         </form>

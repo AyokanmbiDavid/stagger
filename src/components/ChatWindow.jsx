@@ -130,6 +130,7 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => {
 
   return (
     <div className="flex flex-col h-full bg-[#f0f2f5]">
+      
       {/* Header */}
       <div className="h-16 flex items-center px-4 gap-3 bg-white shadow-sm shrink-0">
         <button onClick={onBack} className="md:hidden text-gray-600"><ArrowLeft size={24} /></button>
@@ -195,14 +196,14 @@ const ChatWindow = ({ user, onBack, socket, isTyping }) => {
           )}
           <form onSubmit={handleSend} className="p-2 flex items-center gap-2">
             <label className="cursor-pointer text-gray-500"><Image size={20} /><input type="file" className="hidden" onChange={(e) => {/* your upload logic */}} /></label>
-            <textarea
+            <input
               value={newMessage}
               onChange={handleInputChange}
               placeholder="Type a message..."
-              className="flex-1 p-2 bg-gray-100 rounded-xl resize-none h-10 focus:outline-none"
+              className="flex-1 p-2 bg-gray-100 rounded-2xl border-2 border-gray-200 resize-none h-10 focus:outline-none"
             />
-            <button type="submit" disabled={loading} className="bg-blue-600 text-white p-2 rounded-full">
-              {loading ? <LoadingSmall /> : <Send size={20} />}
+            <button type="submit" disabled={loading} className="bg-blue-600 text-white py-3 px-4 border-2 border-blue-200 cursor-pointer rounded-full">
+              {loading ? <LoadingSmall /> : <Send size={16} />}
             </button>
           </form>
       </div>

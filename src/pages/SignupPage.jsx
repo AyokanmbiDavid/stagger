@@ -1,14 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api/axios";
 import { LoadingSmall } from "../components/Exporting";
-import { FileIcon } from "lucide-react";
+import { Cloud, EyeIcon, FileIcon } from "lucide-react";
 
 const SignupPage = () => {
-  const [formData, setFormData] = useState({ username: "", email: "", password: "" });
+  const [formData, setFormData] = useState({ username: "", email: "", password: "",security_question:"" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [passType, setpassType] = useState("password");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,58 +28,108 @@ const SignupPage = () => {
       navigate("/login"); // Redirect to login after successful signup
     } catch (err) {
       setLoading(false);
-      if (err?.response?.message) {
+      if (err?.response) {
         setError('Email registered or invalid credentials');
       } else {
-        setError(err?.message);
+        setError("Network Error");
       }        
       setTimeout(() => { setError(""); }, 3000);
     }
   };
 
+  function handleChangeForm (e,name) {
+    setFormData({...formData, 
+      [name]: e.target.value
+    })
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <div className="max-w-md w-full bg-white rounded-2xl border-3 border-gray-200 p-8">
-        <h2 className="text-xl font-bold text-green-600 mb-6 flex gap-2 items-center">
-          Create Account with Stagger <FileIcon />
-        </h2>
-        {error && <p className="bg-red-100 text-red-600 p-2 rounded mb-4 text-sm">{error}</p>}
-        
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <input
-            type="text"
-            placeholder="Username"
-            className="w-full p-3 py-4 border border-slate-200 bg-slate-100 rounded-xl"
-            onChange={(e) => setFormData({ ...formData, username: e.target.value })}
-            required
-          />
-          <input
-            type="email"
-            placeholder="Email Address"
-            className="w-full p-3 py-4 border border-slate-200 bg-slate-100 rounded-xl"
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full p-3 py-4 border border-slate-200 bg-slate-100 rounded-xl"
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-          />
-          <button type="submit" className="w-full bg-green-600 text-white p-3 py-4 rounded-lg font-bold hover:bg-green-700 transition">
-            {loading ? <LoadingSmall/> : 'Sign Up'}
+    <>
+      <div className="w-full flex justify-center items-center">
+        <div className="max-md:w-full p-2 max-lg:w-5/10 w-4/10 h-screen flex flex-col justify-between items-center">
+            <h1 className="w-full py-2 font-semibold space-y-3 text-xl">
+              Stagger
+            </h1>
+
+            {/* form */}
+             {/* body */}
+        <div className="w-full flex flex-col">
+          {error && <>
+          <div className="w-full p-3 border-2 border-red-500 bg-red-50 text-red-700 rounded-2xl mb-2">
+              {error}
+          </div>
+          </>}
+          {/* form */}
+         <form action=""
+         onSubmit={handleSubmit}
+         className="w-full flex flex-col max-md:px-3">
+           {/* Username */}
+           <label htmlFor="" className="text-sm text-slat-700 mb-3">
+            Username...</label>
+            <input type="text" 
+            className="border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-slate-200 mb-3"
+            placeholder="Username.."
+            onChange={(e) => handleChangeForm(e,'username')}
+            required />
+
+          {/* Email */}
+           <label htmlFor="" className="text-sm text-slat-700 mb-3">
+            Email...</label>
+            <input type="email" 
+            className="border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-slate-200"
+            placeholder="Email.."
+            onChange={(e) => handleChangeForm(e,'email')}
+            required />
+
+          {/* password */}
+           <label htmlFor="" className="text-sm text-slat-700 mb-3 mt-4">
+            Passsword...</label>
+            <div className="flex justify-between items-center w-full rounded-2xl border-2 border-gray-200">
+            <input type={passType} 
+            className="w-full rounded-l-2xl border-0 outline-none"
+            placeholder="Password..." 
+            onChange={(e) => handleChangeForm(e,'password')}
+            required/>
+            <span 
+            onClick={() => setpassType(passType == "text" ? 'password' : 'text')}
+            className="p-3 px-4 rounded-r-2xl bg-gray-200">
+            <EyeIcon className="w-5" />
+           </span>
+          </div>
+
+          {/*Sec Question*/}
+           <label htmlFor="" className="text-sm text-slat-700 mt-3 mb-3">
+           Security Question used for reseting password</label>
+            <input type="text" 
+            className="border-2 border-gray-200 rounded-2xl focus:outline-none focus:border-slate-200 mb-3"
+            placeholder="Security Question.."
+            onChange={(e) => handleChangeForm(e,'security_question')}
+            required />
+
+          {/* sunbmit button */}
+          <button className="flex justify-center items-center py-3 w-full rounded-2xl bg-green-600 text-white shadow-md mt-3 cursor-pointer">
+            {loading ?
+          <LoadingSmall/> :
+          <>
+            Sign Up <Cloud />
+          </>}
           </button>
 
-          <h1 className="text-sm text-green-800 text-center">
-            You would be redirected to login page after sign up is successful, then login to this app
+          <h1 className="w-full text-center text-gray-700 mt-3">
+            Already have an Account? <Link to={'/login'} className="text-blue-600">Sign In</Link>
           </h1>
-        </form>
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Already have an account? <Link to="/login" className="text-blue-600 font-bold">Log In</Link>
-        </p>
+         </form>
+        </div>
+
+        {/* bottom */}
+        <div className="w-full py-3">
+            <h1 className="text-center font-semibold text-gray-700">
+              Developed by Dayvid @2026 All right Reserved
+            </h1>
+        </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
